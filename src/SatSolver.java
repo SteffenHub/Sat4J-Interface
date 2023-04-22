@@ -1,9 +1,6 @@
 import org.sat4j.core.VecInt;
 import org.sat4j.minisat.SolverFactory;
-import org.sat4j.specs.ContradictionException;
-import org.sat4j.specs.IProblem;
-import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
+import org.sat4j.specs.*;
 
 /**
  * The Sat Solver class which provides the core functionality of the Sat4J Solver
@@ -67,8 +64,32 @@ public class SatSolver {
      * @return Is there a Model with the given variables
      * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
      */
-    public boolean isSatisfiableWith(int[] variables) throws TimeoutException {
+    public boolean isSatisfiableWithConjunct(int[] variables) throws TimeoutException {
         return this.solver.isSatisfiable(new VecInt(variables));
+    }
+
+    /**
+     * Check whether adding a Clause with the given variables would be possible
+     * Note that these Variables connected by an OR.
+     * Example: [1,-2,4] means: is there a model with (1 OR NOT(2) OR 4) is true
+     *
+     * @param variables Any variables. Variables can be given positively or negatively(-3)
+     * @return Is there a Model with the given variables as Clause
+     * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
+     */
+    public boolean isSatisfiableWithClause(int[] variables) throws TimeoutException {
+        IConstr constraint;
+        try{
+            //save new constraint to remove it later
+            constraint = solver.addClause(new VecInt(variables));
+        }catch (ContradictionException e){
+            return false;
+        }
+        boolean isSatisfiable = this.isSatisfiable();
+        //if constraint is null you're adding a redundant rule, like variable 2 is always true, and you're adding (1 OR 2) = (1 OR TRUE) = TRUE
+        if (constraint != null)
+            solver.removeConstr(constraint);
+        return isSatisfiable;
     }
 
     /**

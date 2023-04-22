@@ -116,10 +116,36 @@ public class SatSolverTest {
      * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
      */
     @Test
-    public void isSatisfiableWithVars() throws TimeoutException {
-        assertTrue(this.satSolver.isSatisfiableWith(new int[]{1, 2}));
-        assertFalse(this.satSolver.isSatisfiableWith(new int[]{1, -2}));
-        assertFalse(this.satSolver.isSatisfiableWith(new int[]{1, -2}));
+    public void isSatisfiableWithConjunct() throws TimeoutException {
+        assertTrue(this.satSolver.isSatisfiableWithConjunct(new int[]{1, 2}));
+        assertFalse(this.satSolver.isSatisfiableWithConjunct(new int[]{1, -2}));
+        assertFalse(this.satSolver.isSatisfiableWithConjunct(new int[]{1, -2}));
+    }
+
+    /**
+     * Test some cases for the cnf where the rule set is satisfiable with some rules as Condition.
+     *
+     * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
+     * @throws ContradictionException is needed because we're adding new rules. By adding the rule, the rule set turns into a contradiction. See: <a href="https://www.sat4j.org/maven23/org.sat4j.core/apidocs/org/sat4j/specs/ContradictionException.html">Sat4J documentation</a>
+     */
+    @Test
+    public void isSatisfiableWithClause() throws TimeoutException, ContradictionException {
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{1, 2}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{1, -2}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{-1, 2}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{-1, -2}));
+
+        this.satSolver.addVariable(1);
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{1, 2}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{1, -2}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{-1, 2}));
+        assertFalse(this.satSolver.isSatisfiableWithClause(new int[]{-1, -2}));
+
+        this.satSolver.addVariable(-3);
+        assertFalse(this.satSolver.isSatisfiableWithClause(new int[]{-1, 3}));
+        assertFalse(this.satSolver.isSatisfiableWithClause(new int[]{-2, 3}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{-1, -3}));
+        assertTrue(this.satSolver.isSatisfiableWithClause(new int[]{-2, -3}));
     }
 
     /**

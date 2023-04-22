@@ -23,8 +23,8 @@ public class SolverUsages {
      * @throws TimeoutException if the Boolean satisfiability solver takes too long to respond. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
      */
     public static boolean isLogicalConclusion(int condition, int consequence, SatSolver satSolver) throws TimeoutException {
-        return satSolver.isSatisfiableWith(new int[]{condition, consequence}) &&
-                !satSolver.isSatisfiableWith(new int[]{condition, -consequence});
+        return satSolver.isSatisfiableWithConjunct(new int[]{condition, consequence}) &&
+                !satSolver.isSatisfiableWithConjunct(new int[]{condition, -consequence});
     }
 
     /**
@@ -43,8 +43,8 @@ public class SolverUsages {
      */
     public static boolean isHardConclusion(int condition, int consequence, SatSolver satSolver) throws TimeoutException {
         return satSolver.isSatisfiableWith(-consequence) &&
-                satSolver.isSatisfiableWith(new int[]{condition, consequence}) &&
-                !satSolver.isSatisfiableWith(new int[]{condition, -consequence});
+                satSolver.isSatisfiableWithConjunct(new int[]{condition, consequence}) &&
+                !satSolver.isSatisfiableWithConjunct(new int[]{condition, -consequence});
     }
 
     /**
@@ -85,10 +85,10 @@ public class SolverUsages {
         for (int var1 = 1, cycle = 1; var1 <= satSolver.getHighestVar(); var1++) {
             //start with var1 +1. So you don't have to look twice like: 1,2 and 2,1. +1 for 1,1 or 2,2 ...
             for (int var2 = var1 + 1; var2 <= satSolver.getHighestVar(); var2++, cycle++) {
-                if (satSolver.isSatisfiableWith(new int[]{var1, var2}) &&
-                        satSolver.isSatisfiableWith(new int[]{-var1, -var2}) &&
-                        !satSolver.isSatisfiableWith(new int[]{var1, -var2}) &&
-                        !satSolver.isSatisfiableWith(new int[]{-var1, var2})
+                if (satSolver.isSatisfiableWithConjunct(new int[]{var1, var2}) &&
+                        satSolver.isSatisfiableWithConjunct(new int[]{-var1, -var2}) &&
+                        !satSolver.isSatisfiableWithConjunct(new int[]{var1, -var2}) &&
+                        !satSolver.isSatisfiableWithConjunct(new int[]{-var1, var2})
                 ) {
                     equalVars.add(new int[]{var1, var2});
                 }
