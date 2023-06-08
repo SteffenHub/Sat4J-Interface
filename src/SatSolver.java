@@ -69,6 +69,38 @@ public class SatSolver {
     }
 
     /**
+     * Adding the given clauses temporally to the ruleSet and check whether the ruleSet is still satisfiable.
+     * Example: [[1,2], [3], [2,4]] means we are adding the following rules to the ruleSet:
+     * (1 OR 2) AND (3) AND (2 OR 4)
+     * after we check if the ruleSet is still satisfiable we delete these clauses from the ruleSet.
+     *
+     * @param clauses The clauses that should be checked
+     * @return Can these clauses be added to the ruleSet
+     * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
+     */
+    public boolean isSatisfiableWithClauses(int[][] clauses) throws TimeoutException {
+        IConstr[] constraints = new IConstr[clauses.length];
+        boolean isSatisfiable = true;
+        for (int i = 0; i < clauses.length; i++) {
+            try {
+                //save new constraint to remove it later
+                constraints[i] = solver.addClause(new VecInt(clauses[i]));
+            } catch (ContradictionException e) {
+                isSatisfiable = false;
+                break;
+            }
+        }
+        if (isSatisfiable)
+            isSatisfiable = this.isSatisfiable();
+        for (IConstr constraint : constraints) {
+            //if constraint is null you're adding a redundant rule, like variable 2 is always true, and you're adding (1 OR 2) = (1 OR TRUE) = TRUE
+            if (constraint != null)
+                solver.removeConstr(constraint);
+        }
+        return isSatisfiable;
+    }
+
+    /**
      * Check whether adding a Clause with the given variables would be possible
      * Note that these Variables connected by an OR.
      * Example: [1,-2,4] means: is there a model with (1 OR NOT(2) OR 4) is true

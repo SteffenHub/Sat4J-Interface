@@ -123,6 +123,40 @@ public class SatSolverTest {
     }
 
     /**
+     * Test some cases for the cnf where the rule set is satisfiable with some additional rules as Condition.
+     * Used Test Cases from tests for isSatisfiableWithClause().
+     *
+     * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
+     * @throws ContradictionException is needed because we're adding new rules. By adding the rule, the rule set turns into a contradiction. See: <a href="https://www.sat4j.org/maven23/org.sat4j.core/apidocs/org/sat4j/specs/ContradictionException.html">Sat4J documentation</a>
+     */
+    @Test
+    void isSatisfiableWithClauses() throws TimeoutException, ContradictionException {
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{}));
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{-2}}));
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{1},{-1}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1,-2},{3,4}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1,-2},{-3,4}}));
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{1,-2},{-4}}));
+
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1, 2}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1, -2}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, 2}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, -2}}));
+
+        this.satSolver.addVariable(1);
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1, 2}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{1, -2}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, 2}}));
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, -2}}));
+
+        this.satSolver.addVariable(-3);
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, 3}}));
+        assertFalse(this.satSolver.isSatisfiableWithClauses(new int[][]{{-2, 3}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{-1, -3}}));
+        assertTrue(this.satSolver.isSatisfiableWithClauses(new int[][]{{-2, -3}}));
+    }
+
+    /**
      * Test some cases for the cnf where the rule set is satisfiable with some rules as Condition.
      *
      * @throws TimeoutException if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
