@@ -11,7 +11,7 @@ public class SolverUsages {
     /**
      * Checks if there is a logical implication between the two given boolean variables.
      * An implication exists when the truth of (condition and consequence) enforces the falsity of (condition and not consequence).
-     * For example the rule: (a -> b) which is logically equivalent to (NOT(a) or b). If we pass condition = a and consequence = b true will be returned.
+     * For example the rule: (a -&gt; b) which is logically equivalent to (NOT(a) or b). If we pass condition = a and consequence = b true will be returned.
      * Note that if the consequence is always true(determined) and the condition can be true is always a conclusion. For example,
      * we use consequence = b and b is determined and is always true, and we use condition = a and the variable provided as condition
      * is not determined then true will be returned.
@@ -31,7 +31,7 @@ public class SolverUsages {
      * Checks if there is a hard implication between the two given boolean variables.
      * A hard implication exists when the truth of (condition and consequence) enforces the falsity of (condition and not consequence)
      * and the consequence is not already determined as false or true.
-     * For example the rule: (a -> b) which is logically equivalent to (NOT(a) or b). If NOT(b) is satisfiable,
+     * For example the rule: (a -&gt; b) which is logically equivalent to (NOT(a) or b). If NOT(b) is satisfiable,
      * and we pass condition = a and consequence = b true will be returned.
      * Note that this is not the logical conclusion, because checking NOT(b) is satisfiable is not required to be a logical conclusion.
      *

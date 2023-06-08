@@ -223,7 +223,7 @@ public class SolverUsagesTest {
     /**
      * Testing the search of Equal Vars in a rule set.
      * We define some rule sets with different amount of equal vars in it by
-     * adding rules like a -> b and b -> a which means that they are logically equal.
+     * adding rules like a -&gt; b and b -&gt; a which means that they are logically equal.
      *
      * @throws TimeoutException       if the calculation takes too much time. See: <a href="https://www.sat4j.org/doc/core/org/sat4j/specs/TimeoutException.html">Sat4J documentation</a>
      * @throws ContradictionException If the rules are a contradiction. See: <a href="https://www.sat4j.org/maven23/org.sat4j.core/apidocs/org/sat4j/specs/ContradictionException.html">Sat4J documentation</a>
